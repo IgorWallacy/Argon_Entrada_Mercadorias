@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080',
+  apiUrl: 'https://179.107.128.52:2020',
   clientId: 'doks',
   clientSecret: '1234',
   obterTokenUrl : 'oauth/token'
