@@ -1,0 +1,170 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <h3 class="mb-0">Selecione uma Nota Fiscal de Entrada para Conferência</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+
+                        
+
+                        <p-table #dt [value]="notasFilial" [responsive]="true" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [loading]="loading"  [filterDelay]="0" [globalFilterFields]="['numeroNotaFiscal','filial.razaosocial','razaoSocial','emissao','cnpjcpf']"
+                        currentPageReportTemplate="Exibindo {first} de {last} no total de {totalRecords} notas" [rowsPerPageOptions]="[10,25,50]">
+                       
+                        <ng-template pTemplate="caption">
+                            <div class="table-header">
+                             
+                                <span class="p-input-icon-left">   <i class="pi pi-search"></i>
+                                  
+                                  
+                                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Pesquisar" />
+                                    
+
+                                </span>
+                                <br/> <br/>
+                            <span >
+                                
+                                <p-calendar showButtonBar="true"  [locale]="pt" (onSelect)="onDateSelect($event)"  [touchUI]="true"  (onClearClick)="dt.filter('', 'emissao', 'equals')"   placeholder="Data de Emissão" dateFormat="dd/mm/yy"></p-calendar>
+
+                            </span>    
+                            <br/><br/>
+                            <span class="p-column-title">
+                                Conferencia Aprovada ?   
+                                       
+                                <p-selectButton  (onChange)="onRepresentativeChange($event)"   class="p-column-filter" [options]="options" [(ngModel)]="value1"></p-selectButton>
+                            </span>
+
+                            </div>
+
+                        </ng-template>
+
+                       
+                       
+                        <ng-template pTemplate="header">
+                            <tr>
+                              <!--  <th>Filial</th>  -->
+                                <th>Número</th>
+                                <th>Razão Social</th>
+                                <th>CNPJ / CPF</th>
+                                <th>Data de Entrada</th>
+                                <th>Valor Total da Nota</th>
+                                <th>Conferencia Aprovada ? </th>
+                              
+                            </tr>
+                            <tr>
+                                <!--
+                                <th>
+                                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'filial.razaosocial', 'startsWith')" placeholder="Filial" class="p-column-filter">
+                                </th>
+                            -->
+                                <th>
+                                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'numeroNotaFiscal', 'contains')" placeholder="Número da Nota Fiscal" class="p-column-filter">
+                                </th>
+
+                                <th>
+                                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'razaoSocial', 'contains')" placeholder="Razão Social " class="p-column-filter">
+                                </th>
+
+                                <th>
+                                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'cnpjcpf', 'startsWith')" placeholder="CNPJ " class="p-column-filter">
+                                </th>
+
+                                <th>
+                                    <p-calendar [locale]="pt" (onSelect)="onDateSelect($event)" showButtonBar="true"  [touchUI]="true" (onClearClick)="dt.filter('', 'emissao', 'equals')"   placeholder="Data de Emissão"  dateFormat="dd/mm/yy"></p-calendar>
+                                   
+                                </th>
+
+                                <th>
+                                    
+                                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'valorTotalNota', 'startsWith')" placeholder="Valor Total " class="p-column-filter">
+                                </th>
+
+                                <th>
+                                   
+                                   
+                                </th>
+
+                                <th></th>
+
+                                </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-nota>
+                            <tr>
+                                <!--
+                                <td>
+                                    
+                                    <span class="p-column-title">
+                                        Razão Social </span>
+                                    {{nota.filial.razaosocial}}
+                                </td>
+
+                            -->
+                                <td><span class="p-column-title">Número da Nota </span>
+                                    {{nota.numeroNotaFiscal}}
+                                </td>
+                                <td><span class="p-column-title">Fornecedor</span>
+                                    {{nota.razaoSocial}}
+                                </td>
+                                <td>
+                                    <span class="p-column-title">CNPJ</span>
+                                    {{nota.cnpjcpf}}
+                                </td>
+
+                                <td>
+                                    <span class="p-column-title">Data de Emissão</span>
+                                    {{nota.emissao  | date: 'dd/MM/yyyy'}}
+                                </td>
+
+                                <td>
+                                    <span class="p-column-title">Valor Total da Nota </span>
+                                    {{nota.valorTotalNota}}
+                                </td>
+                                <td>
+                                    
+                                    <span class="p-column-title">Conferencia Aprovada ?   
+                                       
+                                      
+                                    </span>
+
+                                    <div [ngClass]="{' vermelho ' : nota.conferencia === 0, 'verde' : nota.conferencia === 1}">
+                                        <div *ngIf="nota.conferencia ===0">
+                                            <button pButton icon="pi pi-exclamation-triangle"   label="Pendente"  class="p-button-raised p-button-rounded p-button-danger" (click)="confere(nota.id)" ></button>
+                                            
+                                        </div>
+                                        <div *ngIf="nota.conferencia ===1">
+                                            <button icon="pi pi-check-square" pButton label="Conferido / Aprovado" (click)="confere(nota.id, nota.filial.id)" class="p-button-raised p-button-rounded p-button-success" ></button>
+                                            
+                                        </div>
+                                        </div>
+
+                                    
+                               
+                            </td>
+                                
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorleft">
+                            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorright">
+                            <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+                        </ng-template>
+                    </p-table>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

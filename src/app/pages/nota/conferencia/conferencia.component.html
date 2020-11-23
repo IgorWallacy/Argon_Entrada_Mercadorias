@@ -1,0 +1,55 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <h3 class="mb-0">Conferencias registradas </h3> <br />
+                    <button  pButton icon="pi pi-plus" class="p-button-success p-button-rounded" (click)="nova()"  label="Incluir Nova"></button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                        <p-table [responsive]="true" [value]="notaFisica" [loading]="loading">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Número da Conferencia</th>
+                                    <th>Nota Fiscal</th>
+                                    <th>Data </th>
+                                    <th>Conferir</th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-f>
+                                <tr>
+                                    <td>
+                                        <span class="p-column-title">Número da Conferencia</span>
+                                        {{f.id}}
+                                    </td>
+                                    <td>
+                                        <span class="p-column-title">Número da nota fiscal</span>
+                                        {{f.notafiscal.numeroNotaFiscal}}
+                                    </td>
+                                    <td>
+                                        <span class="p-column-title">Data </span>
+                                        {{f.data  | date: 'dd/MM/yyyy - hh:mm:ss'}}</td>
+                                    
+                                        <td>
+                                            <span class="p-column-title">Editar </span>
+                                        <p-button icon="pi pi-sign-in" (click)="editar(f.id, f.notafiscal.filial.id)" label="Realizar Conferência"></p-button>
+                                        </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

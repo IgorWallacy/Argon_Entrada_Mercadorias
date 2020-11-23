@@ -1,0 +1,211 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <h3 class="mb-0">Cadastrar Itens para Conferencia </h3> <br />
+                   
+                </div>
+                
+                    
+                        <p-toast></p-toast>
+
+                        <div class="card">
+                            <p-toolbar styleClass="p-mb-4">
+                                <ng-template pTemplate="left">
+                                    <button pButton pRipple label="Incluir produto" icon="pi pi-plus" class="p-button-success p-mr-2 p-button-rounded" (click)="openNew()"></button>
+                                    
+                                </ng-template>
+                               <!-- <ng-template pTemplate="right">
+                                <button pButton pRipple label="Excluir" icon="pi pi-trash" class="p-button-danger p-mr-2" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+                                    </ng-template> -->
+                            </p-toolbar>
+                            <div style="margin-top: 20px;">
+                            <p-table #dt [value]="itens"  [rows]="10" [responsive]="true" [paginator]="true" [globalFilterFields]="['filial.nome','idProduto.nome','representative.name','status']"
+                                [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+                                currentPageReportTemplate="Exibindo {first} de {last} no total de {totalRecords} produtos" [showCurrentPageReport]="true">
+                                <ng-template pTemplate="caption">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                        <h5 class="p-m-0">Gerenciar Produtos</h5>
+                                        <span class="p-input-icon-left">
+                                            <i class="pi pi-search"></i>
+                                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Pesquisar..." />
+                                        </span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="header" >
+                                    <tr>
+                                      
+                                      <!--  <th>Id</th>
+                                        <th pSortableColumn="filial">Filial <p-sortIcon field="filial"></p-sortIcon></th> -->
+                                        <th pSortableColumn="idProduto.nome">Produto <p-sortIcon field="idProduto.nome"></p-sortIcon></th>
+                                        <th pSortableColumn="idUnidadeMedida.nome"> Embalagem <p-sortIcon field="idUnidadeMedida.nome"></p-sortIcon></th>
+                                        <th pSortableColumn="quantidade">Quantidade de Embalagem <p-sortIcon field="quantidade"></p-sortIcon></th>
+                                        <th pSortableColumn="fatorConversao">Fator de Conversão (Quantidade na Embalagem ) <p-sortIcon field="fatorConversao"></p-sortIcon></th>
+                                        <th colspan="2"></th>
+                        
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-product>
+                                    <tr>
+                                        
+                                    <!--    <td> {{product.idConferencia.id}}</td>
+                                        <td>{{product.idConferencia.filial.nome}} </td> -->
+                                       
+                                        <td> 
+                                             <span class="p-column-title">
+                                                <th pSortableColumn="idProduto.nome">Produto</th>
+
+                                                
+                                                 
+                                               
+                                             </span>
+                                             {{product.idProduto.nome}} </td>
+                                        <td>
+                                            <span class="p-column-title">Embalagem </span>
+                                            {{product.idUnidadeMedida.nome }}</td>
+                                        <td>
+                                            <span class="p-column-title">Quantidade de {{product.idUnidadeMedida.nome}}</span>
+                                            {{product.quantidade}}</td>
+                                        <td>
+                                            <span class="p-column-title">Fator de Conversão (Quantidade (em) {{product.idUnidadeMedida.nome}}) </span>
+                                            {{product.fatorConversao}}</td>
+                                        
+                                        
+                                        <td>
+                                            <button pButton pRipple icon="pi pi-pencil" label="Editar" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(product)"></button>
+                                            
+                                        </td>
+                                        <td>
+                                            <button pButton pRipple icon="pi pi-trash" label="Excluir" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"></button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="summary">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                      Total de {{itens ? itens.length : 0 }} produtos.
+                                    </div>
+                                </ng-template>
+                            </p-table>
+                            </div>
+                        </div>
+
+                        <p-dialog (onHide)="fecharCamera()"  [(visible)]="abrirCameraDialog" [style]="{width: '850px'}" header="Escaneando ..." [modal]="true" styleClass="p-fluid">
+                            Posicione o código de barras próximo a câmera e aguarde ...
+                            <br/>
+                            <ng-template pTemplate="content">
+                            
+                            </ng-template>
+                            <br/>
+                            
+
+                           <zxing-scanner [enable]="scannerEnabled"   (scanSuccess)="scan($event)" [formats]="['QR_CODE', 'EAN_13', 'CODE_128', 'DATA_MATRIX']"></zxing-scanner> 
+                        </p-dialog>
+                        
+                        <p-dialog [(visible)]="productDialog" [style]="{width: '850px'}" header="Detalhes" [modal]="true" styleClass="p-fluid">
+                            
+                            <ng-template pTemplate="content">
+                                <div stryle = "width : 50 px">
+                                <button  pButton pRipple label="Escanear Cod. Barras" icon="pi pi-camera"  class="p-button-rounded" (click)="abrirCamera()"></button>
+                                </div>
+                               
+                                
+                                <div class="p-field">
+                                    <label for="Produto">Produto</label> <br/>
+                                    
+                                    
+                                   
+                                    <p-autoComplete [forceSelection]="false" inputmode="search"  [dropdown]="false" required="true" minLength= "5" [(ngModel)]="product.idProduto" [suggestions]="produtoResult"  (completeMethod)="search($event)" field="nome" >
+                                        
+                                    </p-autoComplete> 
+
+                                    <small class="p-invalid" *ngIf="submitted && !product.idProduto">Informe o produto. O campo é obrigatório</small>
+
+                                    
+
+                                    
+                                   
+                                </div>
+
+                                <div class="p-field">
+
+                                    <div class="p-field">
+                                        <label for="unidadeMedida">Unidade de Medida</label>
+                                       
+                                        <p-autoComplete inputmode="search" [forceSelection]="false"   required="true" aria-describedby="unidade-help" minLength= "2" [(ngModel)]="product.idUnidadeMedida" [suggestions]="unidadeResult"  (completeMethod)="searchUnidade($event)" field="nome" >
+                                        
+                                            
+                                        </p-autoComplete>
+                                        <small id="unidade-help">Informe a unidade de medida do produto na nota</small> <br/>
+                                        <small class="p-invalid" *ngIf="submitted && !product.idUnidadeMedida">Informe a unidade de medida. O campo é obrigatório</small>
+                                    </div>
+                                </div>
+
+
+                                <div class="p-field">
+
+                                    <div class="p-field">
+                                        <label for="quantidade">Quantidade de ( CAIXA, PACOTE, FARDO)  </label>
+                                        <input id="quantidade" inputmode="numeric" required="true" type="number" aria-describedby="quantidade-help" pInputText [(ngModel)]="product.quantidade" />
+                                        <small id="quantidade-help">Informe a quantidade de embalagens </small> <br/>
+                                        <small class="p-invalid" *ngIf="submitted && !product.quantidade">Informe a quantidade. O campo é obrigatório</small>
+                                    </div>
+                                </div>
+
+
+                                
+                               
+                                    <div class="p-field">
+                                        <label for="fator">Fator de Conversão (Quantidade dentro da Embalagem) </label>
+                                        <input id="fator" inputmode="numeric" required="true" type="number" aria-describedby="fator-help" pInputText [(ngModel)]="product.fatorConversao" />
+                                        
+                                        <small id="fator-help">Informe o fator de conversão (Quantidade da embalagem) Ex : Caixa com 10 = 10 </small> <br/>
+                                        <small class="p-invalid" *ngIf="submitted && !product.fatorConversao">Informe o fator de conversão. O campo é obrigatório</small>
+                                    </div>
+                                
+                               
+                                    <div class="p-field" *ngIf="!editando">
+                                        <label for="validade">Data de Validade</label>
+                                       
+                                        <p-calendar id="validade" [locale]="pt" dateFormat="dd/mm/yy" required="true" aria-describedby="validade-help"  inputmode="date" [(ngModel)]="product.validade" ></p-calendar>
+                                        <small id="validade-help">Informe o vencimento do produto </small> <br/>
+                                        <small class="p-invalid" *ngIf="submitted && !product.validade">Informe a validade. O campo é obrigatório</small>
+                                    </div>
+    
+                            
+                        
+                                <div class="p-formgrid p-grid">
+                                   
+                                  
+                                </div>
+                            </ng-template>
+                            
+                            <ng-template pTemplate="footer">
+
+                                
+                               
+                                <button pButton pRipple label="Cancelar" icon="pi pi-times"  class="p-button-danger" (click)="hideDialog()"></button>
+                                <button pButton pRipple label="Salvar"  icon="pi pi-check"  class="p-button-success" (click)="salvar(product)"></button>
+
+                            </ng-template>
+                           
+                        </p-dialog>
+                        
+                        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+                        
+                        
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>

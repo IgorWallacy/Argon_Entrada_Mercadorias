@@ -1,0 +1,5 @@
+@media screen and (max-width: 40em) {
+    .p-datatable.p-datatable-responsive .p-datatable-thead > tr > th,
+    .p-datatable.p-datatable-responsive .p-datatable-tfoot > tr > td {
+      display: none !important;
+    }}
