@@ -1,4 +1,4 @@
-<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+<div class="header bg-danger pb-8 pt-5 pt-md-8">
     <div class="container-fluid">
         <div class="header-body">
         </div>
@@ -16,7 +16,7 @@
                 </div>
                 
                     
-                        <p-toast></p-toast>
+                <p-toast sticky="true"  position="bottom-center" preventOpenDuplicates="true"	></p-toast>
 
                         <div class="card">
                             <p-toolbar styleClass="p-mb-4">
@@ -29,7 +29,7 @@
                                     </ng-template> -->
                             </p-toolbar>
                             <div style="margin-top: 20px;">
-                            <p-table #dt [value]="itens"  [rows]="10" [responsive]="true" [paginator]="true" [globalFilterFields]="['filial.nome','idProduto.nome','representative.name','status']"
+                            <p-table #dt styleClass="p-datatable-lg" [value]="itens"  [rows]="10" [loading]="loading" [responsive]="true" [paginator]="true" [globalFilterFields]="['filial.nome','idProduto.nome','representative.name','status']"
                                 [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
                                 currentPageReportTemplate="Exibindo {first} de {last} no total de {totalRecords} produtos" [showCurrentPageReport]="true">
                                 <ng-template pTemplate="caption">
@@ -98,32 +98,41 @@
                             </div>
                         </div>
 
-                        <p-dialog (onHide)="fecharCamera()"  [(visible)]="abrirCameraDialog" [style]="{width: '850px'}" header="Escaneando ..." [modal]="true" styleClass="p-fluid">
-                            Posicione o código de barras próximo a câmera e aguarde ...
+                        <p-dialog blockScroll="true" position="top" (onHide)="fecharCamera()"  [(visible)]="abrirCameraDialog" [style]="{width: '100vh'}" header="Escaneando ..." [modal]="true" styleClass="p-fluid">
+                            Posicione o código de barras próximo a câmera e aguarde a leitura automática...
                             <br/>
-                            <ng-template pTemplate="content">
-                            
-                            </ng-template>
                             <br/>
                             
 
-                           <zxing-scanner [enable]="scannerEnabled"   (scanSuccess)="scan($event)" [formats]="['QR_CODE', 'EAN_13', 'CODE_128', 'DATA_MATRIX']"></zxing-scanner> 
+                      <!--     <zxing-scanner [enable]="abrirCameraDialog"   (scanSuccess)="scan($event)" [formats]="['QR_CODE', 'EAN_13', 'CODE_128', 'DATA_MATRIX']"></zxing-scanner> -->
+
+                          <barcode-scanner-livestream   type="ean" (valueChanges)="scan($event)" > </barcode-scanner-livestream> 
+
+                           
+                         
+                         
+
                         </p-dialog>
                         
-                        <p-dialog [(visible)]="productDialog" [style]="{width: '850px'}" header="Detalhes" [modal]="true" styleClass="p-fluid">
+                        <p-dialog position="bottom" [(visible)]="productDialog" blockScroll="true" [style]="{width: '80vh'}" [modal]="true" [maximizable]="true" styleClass="p-fluid">
                             
+
+                            <ng-template pTemplate="header">
+                                <div stryle = "width : 90 vh">
+                                    <button  pButton pRipple label="Ler Cód. Barras" icon="pi pi-camera"  class="p-button-rounded p-button-info" (click)="abrirCamera()"></button>
+                                    </div>
+                            </ng-template>
+
                             <ng-template pTemplate="content">
-                                <div stryle = "width : 50 px">
-                                <button  pButton pRipple label="Escanear Cod. Barras" icon="pi pi-camera"  class="p-button-rounded" (click)="abrirCamera()"></button>
-                                </div>
                                
+                                
                                 
                                 <div class="p-field">
                                     <label for="Produto">Produto</label> <br/>
                                     
                                     
                                    
-                                    <p-autoComplete [forceSelection]="false" inputmode="search"  [dropdown]="false" required="true" minLength= "5" [(ngModel)]="product.idProduto" [suggestions]="produtoResult"  (completeMethod)="search($event)" field="nome" >
+                                    <p-autoComplete [forceSelection]="true" inputmode="search"  [dropdown]="false" required="true" minLength= "5" [(ngModel)]="product.idProduto" [suggestions]="produtoResult"  (completeMethod)="search($event)" field="nome" >
                                         
                                     </p-autoComplete> 
 
@@ -140,7 +149,7 @@
                                     <div class="p-field">
                                         <label for="unidadeMedida">Unidade de Medida</label>
                                        
-                                        <p-autoComplete inputmode="search" [forceSelection]="false"   required="true" aria-describedby="unidade-help" minLength= "2" [(ngModel)]="product.idUnidadeMedida" [suggestions]="unidadeResult"  (completeMethod)="searchUnidade($event)" field="nome" >
+                                        <p-autoComplete inputmode="search" [forceSelection]="true"   required="true" aria-describedby="unidade-help" minLength= "2" [(ngModel)]="product.idUnidadeMedida" [suggestions]="unidadeResult"  (completeMethod)="searchUnidade($event)" field="nome" >
                                         
                                             
                                         </p-autoComplete>
@@ -175,17 +184,14 @@
                                     <div class="p-field" *ngIf="!editando">
                                         <label for="validade">Data de Validade</label>
                                        
-                                        <p-calendar id="validade" [locale]="pt" dateFormat="dd/mm/yy" required="true" aria-describedby="validade-help"  inputmode="date" [(ngModel)]="product.validade" ></p-calendar>
+                                        <p-calendar id="validade" [inline]="true"  [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2021:2030"  [locale]="pt" dateFormat="dd/mm/yy" required="true" aria-describedby="validade-help"  inputmode="none" [(ngModel)]="product.validade" ></p-calendar>
                                         <small id="validade-help">Informe o vencimento do produto </small> <br/>
                                         <small class="p-invalid" *ngIf="submitted && !product.validade">Informe a validade. O campo é obrigatório</small>
                                     </div>
     
                             
                         
-                                <div class="p-formgrid p-grid">
-                                   
-                                  
-                                </div>
+                                
                             </ng-template>
                             
                             <ng-template pTemplate="footer">
@@ -209,3 +215,12 @@
         </div>
     </div>
 </div>
+
+<p-dialog position="bottom" [(visible)]="paginaCarregada"  [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+[draggable]="false" [resizable]="false" [closable]="false">
+<div class="p-text-center">               
+<h1>... Sincronizando produtos ...</h1>
+</div>
+<p-progressBar mode="indeterminate"></p-progressBar>
+
+</p-dialog>

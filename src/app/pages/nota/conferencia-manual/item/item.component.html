@@ -1,0 +1,345 @@
+<div class="header bg-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+     
+      <h1 class="text-center" style=" color: whitesmoke; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700;  ">  {{fornecedor}} </h1>
+      
+      </div>
+    </div>
+
+    
+    <div class="separator separator-bottom separator-skew zindex-100">
+        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+  </div>
+
+  <div class="p-shadow-24" >
+    <div class="container-fluid mt-7">
+
+        
+
+  <div class="col-lg-2 col-md-2">
+    <button  pButton pRipple label="Finalizar" icon="fa fa-check" class="p-button-rounded p-button-success p-mr-2" (click)="finalizar()"></button>
+</div>
+</div>
+</div>
+ 
+
+
+  <p-toast position="bottom-center"></p-toast>
+  <!-- Page content -->
+  <div class="p-shadow-24" >
+  <div class="container-fluid mt-7">
+    
+    <div class="row justify-content-center">
+       
+
+        <div class="col-lg-12 col-md-12">
+          <div class="card bg-secondary shadow border-0">
+           
+    <div class="row">
+        
+      <div class="col">
+
+        <p-card >
+            
+            <h1 style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-weight: bolder;"> 
+               Atenção conferente responsável pelo lançamento<br/>
+          <p>  1 - Retire o produto da caixa <br/> 
+            2 - Digite o código de barras ou o código interno <br/> 
+            3 - Confira com atenção a quantidade dentro da embalagem <br/> 
+            4 - Ao realizar o lançamento do produto conferido, marque o produto como ACEITO ou RECUSADO <br/> 
+            5 - Ao finalizar o lançamento, redirecione o entregador para o balcão de conferência de notas. <br/> 
+        </p>
+            
+            </h1>
+        
+         </p-card>
+          
+        <div class="card shadow border-0">
+
+            
+            
+            <p-toolbar>
+                <div class="p-toolbar-group-left">
+                 
+                    
+                <button  pButton pRipple label="Incluir produto" icon="pi pi-plus" class="p-button-rounded p-button-secondary p-mr-2" (click)="openNew()"></button>
+
+               
+
+                </div>
+                <div class="p-toolbar-group-right">
+
+                <!--    <button  type="button" style="margin-left: 10px;" label="Sincronizar produtos" pButton pRipple icon="pi pi-refresh" (click)="syncronizarProdutosServidor()" class="p-button-warning" pTooltip="Forçar sincronização de produtos" tooltipPosition="bottom"></button> -->
+                
+
+
+                    <!--
+                <button type="button" style="margin-left: 10px;" [disabled]="!supervisor"  label="Aprovar conferência" pButton pRipple icon="pi pi-thumbs-up" (click)="aprovarConferencia()" class="p-button-success p-mr-2" ></button>
+                
+                <button type="button" style="margin-left: 10px;" [disabled]="!supervisor"  label="Reprovar conferência" pButton pRipple icon="pi pi-thumbs-down" (click)="reprovarConferencia()" class="p-button-danger p-mr-2" ></button>
+                    -->
+
+                 <button type="button" style="margin-left: 5px;" label="Imprimir" pButton pRipple icon="pi pi-file-pdf" (click)="generatePdf()" class="p-button-rounded p-button-info" pTooltip="PDF" tooltipPosition="bottom"></button>
+                       
+                </div>
+            </p-toolbar>
+            <p-dialog position="bottom" [(visible)]="paginaCarregada"  [modal]="true" [style]="{width: '60vh'}" [baseZIndex]="10000"
+            [draggable]="false" [resizable]="false" [closable]="false">
+            <div class="p-text-center">               
+            <h1 style="font-size: 3vh;">... Sincronizando produtos ...</h1>
+            </div>
+            <p-progressBar [value]="value"></p-progressBar>
+            
+            </p-dialog>
+
+            <p-dialog blockScroll="true" position="top" (onHide)="fecharCamera()"  [(visible)]="abrirCameraDialog" [style]="{width: '100vh'}" header="Escaneando ..." [modal]="true" styleClass="p-fluid">
+                Posicione o código de barras próximo a câmera e aguarde a leitura automática...
+                <br/> 
+                <br/>
+                
+
+          <!--     <zxing-scanner [enable]="abrirCameraDialog"   (scanSuccess)="scan($event)" [formats]="['QR_CODE', 'EAN_13', 'CODE_128', 'DATA_MATRIX']"></zxing-scanner> -->
+
+              <barcode-scanner-livestream   type="ean" (valueChanges)="scan($event)" > </barcode-scanner-livestream> 
+
+               
+             
+             
+
+            </p-dialog>
+            
+           
+                
+ 
+           
+           
+            <p-table #dt styleClass="p-datatable-striped" selectionMode="single"  [responsive]="true"  [value]="conferencias" [loading]="loading"  currentPageReportTemplate="Exibindo de {first} a {last} no total de {totalRecords} produtos"
+            [filterDelay]="0" [globalFilterFields]="['produto.nome','idUnidadeMedida.nome', 'status']"  [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]" [showCurrentPageReport]="true" >
+
+
+            
+                
+            <ng-template pTemplate="caption">
+                  
+                   
+
+                    <div class="table-header">
+                        
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Pesquisar" />
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+
+                    
+                    
+
+                    <tr>
+                        <th colspan="1">#</th>
+                        <th colspan="3">Produto</th>
+                        <th colspan="1">Unidade de medida</th>
+                        <th>Quantidade de (UNIDAES,CAIXAS,KG,PACOTES)</th>
+                        <th>Fator de conversão (Quantidade dentro da embalagem)</th>
+                        <th>TOTAL(UNIDADES)</th>
+                        <th>Data de vencimento</th>
+                        
+                        <th>Editar / Deletar </th>
+                        <th> Aceitar / Recusar</th>
+                        <th>Status</th>
+                        
+                      
+                        
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                      Total de {{conferencias ? conferencias.length : 0 }} produto(s).
+                    </div>
+                </ng-template>
+                
+                <ng-template pTemplate="body" let-conferencia let-i="rowIndex">
+                    
+                    <tr>
+                        
+                    </tr>
+                    <tr>
+                        
+
+                        <td colspan="1" style="font-weight: bolder; font-style: oblique; color: whitesmoke;"   [ngStyle]="{'background-color':getColor(conferencia.status)}" >
+                           
+                            <span class="p-column-title">#</span>
+                            
+                            {{i+1}}
+                        </td>
+                        <td colspan="3">
+                            <span class="p-column-title">Produto </span>
+                            {{conferencia.produto.nome}}</td>
+                        <td colspan="1">
+                            <span class="p-column-title">Unidade de medida </span>
+                            {{conferencia.idUnidadeMedida.nome}}</td>
+                        <td>
+                            <span class="p-column-title">Quantidade </span>
+                            {{conferencia.quantidade}}</td>
+                        <td>
+                            <span class="p-column-title">Fator de conversão (Dentro da embalagem) </span>
+                            {{conferencia.fatorConversao}}
+                        </td>
+                        
+                        <td>
+                            <span class="p-column-title">TOTAL(UNIDADES) </span>
+                            {{conferencia.quantidade * conferencia.fatorConversao }} 
+                        </td>
+
+                        <td>
+                            <span class="p-column-title">Data de validade (vencimento) </span>
+                            {{conferencia.dataVencimento | date: 'dd/MM/yyyy' }}   </td>
+                       
+                       
+
+                        <td>
+                            <span class="p-column-title">Editar / Deletar </span>
+                            <button  pButton style="margin-left: 10px; margin-top: 4px;" pRipple icon="pi pi-pencil" pTooltip="Editar" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(conferencia)"></button>
+                        
+                           
+                            <button pButton style="margin-left: 10px;  margin-top: 4px;" pRipple icon="pi pi-trash" pTooltip="Deletar" class="p-button-rounded p-button-warning" (click)="deleteProduct(conferencia)"></button>
+                           
+                        </td>
+
+                        <td>
+                            <span class="p-column-title">Aceitar / Recusar </span>
+                           
+                            <button *ngIf="conferencia.status == 'RECUSADO'" pButton style="margin-left: 10px;  margin-top: 4px;" pRipple icon="pi pi-thumbs-up" pTooltip="Aceitar"  class="p-button-rounded  p-mr-2" (click)="aceitar(conferencia)"></button>
+                            <button *ngIf="conferencia.status == 'ACEITO'" pButton style="margin-left: 10px;  margin-top: 4px;" pRipple icon="pi pi-thumbs-down"        pTooltip="Recusar"  class="p-button-rounded " (click)="recusar(conferencia)"></button>
+                            
+                            <button *ngIf="conferencia.status == 'ACEITO'" pButton style="margin-left: 10px;  margin-top: 4px;" pRipple icon="pi pi-thumbs-up" pTooltip="Aceitar"  class="p-button-success p-button-rounded  p-mr-2" (click)="aceitar(conferencia)"></button>
+                            <button *ngIf="conferencia.status == 'RECUSADO'" pButton style="margin-left: 10px;  margin-top: 4px;" pRipple icon="pi pi-thumbs-down"        pTooltip="Recusar"  class="p-button-danger p-button-rounded " (click)="recusar(conferencia)"></button>
+                            
+
+
+                            <button *ngIf="conferencia.status === null" pButton style="margin-left: 10px;  margin-top: 4px;" pRipple icon="pi pi-thumbs-up" pTooltip="Aceitar"  class="p-button-rounded p-button-success p-mr-2" (click)="aceitar(conferencia)"></button>
+                            <button *ngIf="conferencia.status === null" pButton style="margin-left: 10px;  margin-top: 4px;" pRipple icon="pi pi-thumbs-down"        pTooltip="Recusar"  class="p-button-rounded p-button-danger" (click)="recusar(conferencia)"></button>
+                        
+
+                        </td>
+
+                        <td *ngIf="conferencia.status === null ">
+                            <span class="p-column-title">STATUS </span>
+                            <span class="p-tag  p-tag-rounded p-tag-warning">  PENDENTE </span> 
+                        </td>
+
+                        <td *ngIf="conferencia.status === 'ACEITO' ">
+                            <span class="p-column-title">STATUS </span>
+                            <span class="p-tag  p-tag-rounded p-tag-success"> {{conferencia.status}} </span> 
+                        </td>
+
+                        <td *ngIf="conferencia.status === 'RECUSADO' ">
+                            <span class="p-column-title">STATUS </span>
+                            <span class="p-tag  p-tag-rounded p-tag-danger"> {{conferencia.status}} </span> 
+                        </td>
+                       
+                    </tr>
+                </ng-template>
+
+              
+
+            </p-table>
+           
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  
+  <p-dialog [(visible)]="conferenciaDialog" blockscroll="true"  position="bottom" [style]="{width: '1999px'}" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="header">
+        <div style = "width : 90 vh;">
+            <button  pButton pRipple label="Ler Cód. Barras" icon="pi pi-camera"  class="p-button-rounded p-button-info" (click)="abrirCamera()"></button>
+            </div> 
+        </ng-template>
+   
+    <ng-template pTemplate="content">
+
+        
+      
+
+        <div class="p-field">
+            <label for="produto">Produto</label>
+            <p-autoComplete  [dropdown]="false" [delay]="2000"  id="produto" [(ngModel)]="conferencia.produto" field="nome" [suggestions]="results" (completeMethod)="search($event)">
+
+                <ng-template let-produto pTemplate="item">
+                  
+                    <div style="font-size:18px">{{produto.codigo}} - {{produto.ean}} - {{produto.nome}}</div>
+            </ng-template>
+
+            </p-autoComplete>
+            <small id="produto-help">Informe o produto </small> <br/>
+            <small class="p-invalid" *ngIf="submitted && !conferencia?.produto">Informe o produto. O campo é obrigatório</small>
+        </div>
+
+        <div class="p-field">
+
+            <div class="p-field">
+                <label for="unidadeMedida">Unidade de Medida</label>
+               
+                <p-autoComplete [dropdown]="true" inputmode="search" [forceSelection]="false"   required="true" aria-describedby="unidade-help" minLength= "2" [(ngModel)]="conferencia.idUnidadeMedida" [suggestions]="unidadeResult"  (completeMethod)="searchUnidade($event)" field="nome" >
+                
+                    
+                </p-autoComplete>
+                <small id="unidade-help">Informe a unidade de medida do produto na nota</small> <br/>
+                <small class="p-invalid" *ngIf="submitted && !conferenica?.idUnidadeMedida">Informe a unidade de medida. O campo é obrigatório</small>
+            </div>
+        </div>
+        <div class="p-field">
+
+            <div class="p-field">
+                <label for="quantidade">Quantidade de ( KG, CAIXA, PACOTE, FARDO ... )  </label>
+                <input id="quantidade" inputmode="numeric" required="true" type="number" aria-describedby="quantidade-help" pInputText [(ngModel)]="conferencia.quantidade" />
+                <small id="quantidade-help">Informe a quantidade de embalagens </small> <br/>
+                <small class="p-invalid" *ngIf="submitted && !conferencia.quantidade">Informe a quantidade. O campo é obrigatório</small>
+            </div>
+        </div>
+
+
+        
+       
+            <div class="p-field">
+                <label for="fator">Fator de Conversão (Quantidade dentro da Embalagem) </label>
+                <input id="fator" inputmode="numeric" required="true" type="number" aria-describedby="fator-help" pInputText [(ngModel)]="conferencia.fatorConversao" />
+                
+                <small id="fator-help">Informe o fator de conversão (Quantidade da embalagem) Ex : Caixa com 10 = 10 </small> <br/>
+                <small class="p-invalid" *ngIf="submitted && !conferencia.fatorConversao">Informe o fator de conversão. O campo é obrigatório</small>
+            </div>
+       
+
+
+       
+            <div class="p-formgrid p-grid">
+                <div class="p-field p-col">
+                    <small id="validade-help">Informe a data de vencimento</small> <br/>
+                    <small class="p-invalid" *ngIf="submitted && !product?.idUnidadeMedida">Informe a data de vencimento(validade) O campo é obrigatório</small>
+
+                    <label for="vencimento">Data de validade</label>
+                    <p-calendar [inline]="true" [locale]="pt"   id="vencimento" [(ngModel)]="conferencia.dataVencimento" [monthNavigator]="true" [yearNavigator]="true" yearRange="2021:2050"> </p-calendar>
+                </div>
+           
+        </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-rounded p-button-success" (click)="saveProduct(conferencia)"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '650px'}"></p-confirmDialog>

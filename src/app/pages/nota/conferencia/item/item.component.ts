@@ -1,10 +1,15 @@
 
 import { Produto } from './../../../../model/Produto';
 import { NotaService } from './../../../../services/nota.service';
-import { Component, OnInit, ɵConsole } from '@angular/core';
+import { Component, OnInit, ViewChild, ɵConsole } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConferenciaCegaItem } from 'src/app/model/conferenciaCegaItem';
 import { ConfirmationService, MessageService } from 'primeng/api';
+
+import { BarcodeScannerLivestreamComponent } from "ngx-barcode-scanner";
+
+
+
 
 @Component({
   selector: 'app-item',
@@ -17,18 +22,24 @@ export class ItemComponent implements OnInit {
   produtos:any = []
   unidades:any = []
 
-  
+  loading:boolean = true
   
   filteredBrands: any[];
   brands: any;
   produtoResult: any[];
   unidadeResult: any;
 
+  @ViewChild(BarcodeScannerLivestreamComponent)
+  barcodeScanner: BarcodeScannerLivestreamComponent;
+ 
+  barcodeValue;
+
   produto:Produto
   pt: { firstDayOfWeek: number; dayNames: string[]; dayNamesShort: string[]; dayNamesMin: string[]; monthNames: string[]; monthNamesShort: string[]; today: string; clear: string; };
   
   editando: boolean = false;
-  
+  lido: string = '';
+  paginaCarregada = true;
   
 
   constructor(private service:NotaService, private rotaAtivada:ActivatedRoute, private messageService: MessageService, private confirmationService: ConfirmationService) { }
@@ -36,7 +47,7 @@ export class ItemComponent implements OnInit {
   productDialog: boolean;
   abrirCameraDialog: boolean
 
-  produtoLido:string
+  produtoLido:string 
 
   product: {};
 
@@ -46,7 +57,7 @@ export class ItemComponent implements OnInit {
 
   products: ConferenciaCegaItem[];
 
-  scannerEnabled : boolean
+  
   
 
   codigo = this.rotaAtivada.snapshot.params['codigo'];
@@ -55,16 +66,36 @@ export class ItemComponent implements OnInit {
 
   itens
 
+  ngAfterViewInit() {
+    this.barcodeScanner.start();
+    
+  }
+
   abrirCamera(){
+
+    
+    this.messageService.clear();
+
     this.abrirCameraDialog = true
 
-    this.scannerEnabled = true
+    
+
+    this.barcodeScanner.start();
+
+    
     
     
   }
 
   fecharCamera() {
-    this.scannerEnabled = false
+   
+    
+
+    
+
+    this.barcodeScanner.stop();
+
+    this.barcodeScanner == null
 
    
   }
@@ -81,44 +112,69 @@ export class ItemComponent implements OnInit {
   carregarProdutos(){
 
     this.service.getProdutos().subscribe(response => {
-      this.produtos = response
+      this.produtos = response 
+      this.paginaCarregada = false
+      localStorage.setItem('produtos', JSON.stringify(response))
     })
   }
 
+  
+   
+ 
+
   scan(leitor) {
 
-    
+   
+    //console.log(leitor)
 
-    this.messageService.add({severity:'success', life: 5000, summary:'Código lido ... ', detail: `${leitor}`});
-    
-    //this.abrirCameraDialog = false
+    this.lido = leitor.codeResult.code
 
-    
+     
+ 
+     
 
-    const lido = leitor
-
-    this.produtoResult = this.produtos.filter(c =>  c.ean.startsWith(`${lido}`));
+    this.produtoResult = this.produtos.filter(c =>  c.ean.startsWith(`${this.lido}`));
 
     const contador = Object.entries(this.produtoResult).length;
 
-    if(contador === 0){
-      this.messageService.add({severity:'error', life: 5000 , summary:'Produto não encontrado ', detail: `Digite o nome ou o código ou tente novamente a leitura`});
-      this.fecharCamera();
-    }
+     this.messageService.add({severity:'info', life: 5000, summary: 'Leu o código : ', detail: `${this.lido}`})
+      
+  
     
-    this.product = { idConferencia : {
-      id : this.codigo
-    },
+
+    if(contador === 0){
+      this.messageService.add({severity:'warn', life: 5000 , summary: `Produto não encontrado para o codigo: ${this.lido} `, detail: `Digite o nome ou o código ou tente novamente a leitura`});
+      this.fecharCamera();
+     
+      
+    } 
+
+    if(contador >= 1){
+      
+      const nome = this.produtoResult.find( nome => nome)
+
+      this.messageService.add({severity:'success', life: 5000, summary: ' Produto encontrado : ', detail: `${nome.nome}`})
+      
+
+    } 
+    
+    this.product = {
     idProduto:  this.produtoResult.find( id => id)
      
 
     
+    
   };
 
-
+   
+    
+     
     this.abrirCameraDialog = false
     this.fecharCamera();
     
+   
+
+   
     
   }
 
@@ -174,7 +230,13 @@ export class ItemComponent implements OnInit {
 
   openNew() {
 
+    
+
     this.editando = false
+
+    
+
+    
 
   // console.log("filial" + this.product)
    
@@ -219,6 +281,11 @@ deleteSelectedProducts() {
 }
 
 editProduct(product: ConferenciaCegaItem) {
+
+  
+
+
+
   this.product = {...product};
   this.editando = true;
   this.productDialog = true;
@@ -251,7 +318,7 @@ deleteProduct(product: ConferenciaCegaItem) {
 hideDialog() {
   this.productDialog = false;
   this.submitted = false;
-  this.scannerEnabled = false
+  
 }
 
 
@@ -304,6 +371,7 @@ createId(): string {
     return this.service.getNotaConferenciaItens(this.codigo).subscribe(response => {
   //    console.log(response)
       this.itens = response;
+      this.loading = false
     })
   }
 

@@ -9,7 +9,8 @@ declare interface RouteInfo {
     class: string;
 }
 export const ROUTES: RouteInfo[] = [
-    { path: '/dashboard', title: 'Inicio',  icon: 'ni-tv-2 text-primary', class: '' }
+    { path: '/dashboard', title: 'Inicio',  icon: 'ni-tv-2 text-primary', class: '' },
+    { path: '/lotes', title: 'Data de Validade',  icon: 'ni-calendar-grid-58 text-primary', class: '' }
    
    
     
@@ -24,13 +25,10 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
 
   public menuItems: any[];
-  public isCollapsed = true;
+  public isCollapsed = false;
   nome: string;
 
-  logout(){
-    localStorage.clear();
-    this.router.navigate(['/login'])
-  }
+  
 
   constructor(private router: Router, private loginService:LoginService) { }
 
@@ -38,7 +36,7 @@ export class SidebarComponent implements OnInit {
     this.nome = this.loginService.getUsuarioAutenticado()
     this.menuItems = ROUTES.filter(menuItem => menuItem);
     this.router.events.subscribe((event) => {
-      this.isCollapsed = true;
+      this.isCollapsed = false;
    });
   }
 }

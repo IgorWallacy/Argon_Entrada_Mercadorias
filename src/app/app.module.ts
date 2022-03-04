@@ -1,3 +1,7 @@
+import { ErrorHandlerService } from './error-handler.service';
+import { ConferenciaManualService } from './conferencia-manual.service';
+
+import { LoteService } from './services/lote.service';
 import { TokenInterceptor } from './tokenInterceptor';
 import { NotaService } from './services/nota.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,10 +19,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
 
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 
 
 
 
+import localePt from '@angular/common/locales/pt';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localePt);
 
 
 
@@ -32,6 +41,8 @@ import { ComponentsModule } from './components/components.module';
     RouterModule,
     AppRoutingModule,
     
+  
+    
   ],
   declarations: [
     AppComponent,
@@ -40,12 +51,18 @@ import { ComponentsModule } from './components/components.module';
     
     
     
+    
+    
+    
+    
   ],
-  providers: [NotaService, {
+  providers: [NotaService, ConferenciaManualService, LoteService, DatePipe,CurrencyPipe,DecimalPipe, ErrorHandlerService, {
     provide : HTTP_INTERCEPTORS,
     useClass : TokenInterceptor,
     multi : true
-  }],
+  }
+],
+  
   bootstrap: [AppComponent]
 })
 export class AppModule { }

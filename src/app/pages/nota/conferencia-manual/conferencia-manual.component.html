@@ -1,0 +1,242 @@
+<div class="header bg-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+     
+        <h1 class="text-center font-italic" style=" color: whitesmoke; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; font-size: 4vh;  ">  {{nomeFilial}} </h1>
+       
+        <button pRipple icon="fa fa-backward" pButton label="Voltar" (click)="voltar()" class="p-button-rounded p-button-info p-mr-2"></button>
+      
+      </div>
+    </div>
+    <div class="separator separator-bottom separator-skew zindex-100">
+        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+  </div>
+
+  
+ 
+
+  <p-toast position="bottom-center"></p-toast>
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 col-md-12">
+          <div class="card bg-secondary shadow border-0">
+    <div class="row">
+      <div class="col">
+        <div class="card shadow border-0">
+            <p-card>
+            <h1 style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-weight: bolder;"> 
+                Atenção responsável pela conferência dos produtos lançados<br/>
+           <p>  
+             1 - Confira a quantidade total lançada <br/> 
+             2 - Confira a quantidade de embalagens <br/> 
+             3 - Confira a quantidade dentro da embalagem <br/> 
+             4 - Confira o status de cada produto lançado pelo conferente na entrada (ACEITO ou RECUSADO)<br/> 
+             5 - Ao finalizar o lançamento, marque a conferência como APROVADO ou REPROVADO <br/>
+             6 - Assine e entregue o canhoto da nota ao entregador apenas ao resolver todas as pendências <br/>
+             7 - Em caso de dúvidas, chame seu supervisor 
+         </p>
+             
+             </h1>
+             </p-card>
+            <p-toolbar>
+                <button [disabled]="loading" pButton pRipple label="Incluir Nota" icon="pi pi-plus" class="p-button-rounded p-button-success p-mr-2" (click)="openNew()"></button>
+            </p-toolbar>
+          
+            <p-table #dt selectionMode="single" [responsive]="true" styleClass="p-datatable-striped" [loading]="loading" [value]="conferencias"  [filterDelay]="0" [globalFilterFields]="['numeroNotaFiscal','fornecedor.nome' , 'fornecedor.cnpjcpf']"
+            [paginator]="true" [rows]="10" [showCurrentPageReport]="true" 
+            currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} notas"   [rowsPerPageOptions]="[10,25,50]"
+            >
+
+                <ng-template pTemplate="caption">
+                    <div class="table-header">
+                        
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Pesquisar" />
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                      
+                     <!--   <th>Emissão</th> -->
+                        <th>Entrada</th>
+                        <th>Número da nota fiscal</th>
+                     <!--   <th>Série</th> -->
+                        <th>Fornecedor</th>
+                        <th>CNPJ</th>
+                        <th>Valor da nota fiscal</th>
+                        <th>Editar / Deletar</th>
+                        <th>Status</th>
+                        <th *ngIf="supervisor">Aprovar / Reprovar</th>
+                        <th>Conferir</th>
+                        <th>#</th>
+                        
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-conferencia>
+                    <tr >
+                       <!--
+                        <td> <span class="p-column-title">Data de emissão </span>
+                            {{conferencia.dataEmissao   | date: 'dd/MM/yyyy' }}
+                        </td>
+                    -->
+                        <td > <span class="p-column-title">Data de entrada </span>
+                            {{conferencia.dataEntrada   | date: 'dd/MM/yyyy' }}
+                        </td>
+
+                        <td> <span class="p-column-title">Número da nota </span>
+                            {{conferencia.numeroNotaFiscal}}
+                        </td>
+                       <!--
+                        <td> <span class="p-column-title">Série </span>
+                            {{conferencia.serieNotaFiscal}}
+                        </td>
+                    -->
+                        <td> <span class="p-column-title">Fornecedor </span>
+                            {{conferencia.fornecedor.nome}}
+                        </td>
+                        <td> <span class="p-column-title">CNPJ / CPF </span>
+                            {{conferencia.fornecedor.cnpjcpf}}
+                        </td>
+                        <td> <span class="p-column-title">Valor total </span>
+                            {{conferencia.valorNotaFiscal | currency:'BRL':'symbol':'0.2-2':'pt'}}
+                        </td>
+
+                        <td >
+                            <button style="margin-left: 10px;  margin-top: 4px;" pButton pRipple icon="pi pi-pencil" pTooltip="Editar" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(conferencia)"></button>
+                            <button style="margin-left: 10px;  margin-top: 4px;" pButton pRipple icon="pi pi-trash" pTooltip="Deletar" class="p-button-rounded p-button-warning" (click)="deleteProduct(conferencia)"></button>
+                        </td>
+
+                       
+                        <td [ngStyle]="{'background-color':getColor(conferencia.status)}">
+                            <span class="p-column-title">Status </span>
+                        <div [ngClass]="{' vermelho ' : conferencia.status === 0, 'verde' : conferencia.status === 1}">
+
+                            <div *ngIf="conferencia.status === null">
+                                <button pButton icon="pi pi-exclamation-triangle" pTooltip="Pendente"   class="p-button-raised p-button-rounded p-button-sm p-button-warning" ></button>
+                                
+                            </div>
+
+                            <div *ngIf="conferencia.status === false">
+                                <button pButton icon="pi pi-times"  pTooltip="Reprovado"   class="p-button-raised p-button-rounded p-button-sm p-button-danger" ></button>
+                               
+                                
+                            </div>
+                            <div *ngIf="conferencia.status === true">
+                                <button icon="pi pi-check-square" pButton  pTooltip="Aprovado"  class="p-button-raised p-button-rounded p-button-sm p-button-success" ></button>
+                                
+                            </div>
+                            </div>
+                            </td>
+                             
+                            <td *ngIf="supervisor">
+                                <span class="p-column-title">Aprovar / Reprovar </span>
+                             
+                                <button type="button" pTooltip="Aprovar " style="margin-left: 10px;  margin-top: 4px;" *ngIf = "conferencia.status === true || conferencia.status === null" [disabled]="!supervisor"   pButton pRipple icon="pi pi-thumbs-up" (click)="aprovarConferencia(conferencia)"  class=" p-button-success p-button-raised p-button-sm p-button-rounded" ></button>
+
+                                
+                                <button  type="button" pTooltip="Reprovar" style="margin-left: 10px;  margin-top: 4px;" *ngIf = "conferencia.status === false || conferencia.status === null"  [disabled]="!supervisor"  pButton pRipple icon="pi pi-thumbs-down" (click)="reprovarConferencia(conferencia)" class=" p-button-danger p-button-raised p-button-sm p-button-rounded" ></button>
+
+
+                                <button type="button" pTooltip="Aprovar " style="margin-left: 10px;  margin-top: 4px;" *ngIf = "conferencia.status === false " [disabled]="!supervisor"   pButton pRipple icon="pi pi-thumbs-up" (click)="aprovarConferencia(conferencia)"  class=" p-button-raised p-button-sm p-button-rounded" ></button>
+
+                                
+                                <button  type="button" pTooltip="Reprovar" style="margin-left: 10px;  margin-top: 4px;" *ngIf = "conferencia.status === true "  [disabled]="!supervisor"  pButton pRipple icon="pi pi-thumbs-down" (click)="reprovarConferencia(conferencia)" class=" p-button-raised p-button-sm p-button-rounded" ></button>
+
+
+
+                            </td>
+
+                            <td>
+                                <button  pButton label="Conferir" icon="pi pi-arrow-right" type="button" (click)="confere(conferencia.id, conferencia.fornecedor.nome)" *ngIf="conferencia.finalizado === false || supervisor" class="p-button-info p-button-raised p-button-sm p-button-rounded"  >
+                                </button>
+                                </td>
+                                <td>
+                                <button  pButton label="Conferido" icon="pi pi-check-circle" type="button"  class="p-button-success p-button-raised p-button-sm p-button-rounded" *ngIf="conferencia.finalizado === true" >
+                                </button>
+                           </td>
+                    </tr>
+                </ng-template>
+
+               
+
+            </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+        </div>
+        </div>
+</div>
+
+  
+  <p-dialog [(visible)]="conferenciaDialog" blockscroll="true"  position="top" [style]="{width: '1999px'}" header=" Incluir / Atualizar conferência manual" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+
+         
+       
+        <div class="p-field">
+            <label for="numero">Número da nota fiscal</label>
+            <input type="text" required="true" required pInputText id="numero" [(ngModel)]="conferencia.numeroNotaFiscal" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !conferencia.numeroNotaFiscal">O número da nota fiscal é obrigatório.</small>
+              <small class="p-invalid" *ngIf="submitted && !conferencia.numeroNotaFiscal">Informe o número da nota fiscal. O campo é obrigatório</small>
+        </div>
+
+        <div class="p-field p-col">
+            <label for="serie">Série da nota fiscal</label>
+            <input type="text" required inputmode="numeric" [(ngModel)]="conferencia.serieNotaFiscal" pInputText/>
+            <small class="p-invalid" *ngIf="submitted && !conferencia.serieNotaFiscal">A série da nota fiscal é obrigatória.</small>
+            <small class="p-invalid" *ngIf="submitted && !conferencia.serieNotaFiscal">Informe a série da nota fiscal. O campo é obrigatório</small>
+        </div>
+
+        <div class="p-field">
+            <label for="fornecedor">Fornecedor</label>
+            <p-autoComplete [required]="true" id="fornecedor" [(ngModel)]="conferencia.fornecedor" [suggestions]="results" field="nome" (completeMethod)="search($event)"></p-autoComplete>
+            <small class="p-invalid" *ngIf="submitted && !conferencia.fornecedor">O fornecedor da nota fiscal é obrigatório.</small>
+            <small class="p-invalid" *ngIf="submitted && !conferencia.fornecedor">Informe o fornecedor da nota fiscal. O campo é obrigatório</small>
+        </div>
+       
+
+
+        <div class="p-formgrid p-grid">
+            <div class="p-field p-col">
+                <label for="valor">Valor Total da nota fiscal</label>
+              
+                <p-inputNumber [(ngModel)]="conferencia.valorNotaFiscal" inputId="valor" mode="decimal"  locale="pt-BR" [minFractionDigits]="2">
+                </p-inputNumber>
+                <small class="p-invalid" *ngIf="submitted && !conferencia.valorNotaFiscal">O valor total da nota fiscal é obrigatório.</small>
+                <small class="p-invalid" *ngIf="submitted && !conferencia.valorNotaFiscal">Informe o valor total da nota fiscal. O campo é obrigatório</small>
+            </div>
+        </div>
+            <div class="p-formgrid p-grid">
+                <small class="p-invalid" *ngIf="submitted && !conferencia.dataEmissao">A data de emissão da nota fiscal é obrigatório.</small>
+                <small class="p-invalid" *ngIf="submitted && !conferencia.dataEmissao">Informe a data de emissão da nota fiscal. O campo é obrigatório</small>
+                <div class="p-field p-col">
+                    <label for="emissao">Data de emissão</label>
+                    <p-calendar [required]="true" [inline]="true" [locale]="pt"  id="emissao" [(ngModel)]="conferencia.dataEmissao"  [monthNavigator]="true" [yearNavigator]="true" yearRange="2021:2030"> </p-calendar>
+               
+                </div>
+           
+        </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger" (click)="hideDialog()"></button>
+        <button [disabled]="paginaCarregada" pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-rounded p-button-success" (click)="saveProduct(conferencia)"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+<p-dialog [(visible)]="paginaCarregada" blockscroll="true" [closable]="false"  position="top" [style]="{width: '850px'}"  [modal]="true" styleClass="p-fluid">
+    
+    <p-progressBar  mode="indeterminate"> </p-progressBar>
+
+
+</p-dialog>

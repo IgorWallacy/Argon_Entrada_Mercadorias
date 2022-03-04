@@ -1,3 +1,7 @@
+import { PrecosalteraadosComponent } from './../../pages/precosalteraados/precosalteraados.component';
+import { ManualItemComponent } from './../../pages/nota/conferencia-manual/item/item.component';
+import { ConferenciaManualComponent } from './../../pages/nota/conferencia-manual/conferencia-manual.component';
+
 import { ItemComponent } from './../../pages/nota/conferencia/item/item.component';
 import { ConferenciaComponent } from './../../pages/nota/conferencia/conferencia.component';
 
@@ -29,12 +33,24 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {CalendarModule} from 'primeng/calendar';
+import {ProgressBarModule} from 'primeng/progressbar';
+import {CardModule} from 'primeng/card';
+
 
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { BarcodeScannerLivestreamModule } from "ngx-barcode-scanner";
 
+import {MessagesModule} from 'primeng/messages';
+import { LoteComponent } from 'src/app/pages/lote/lote.component';
+import { MenuDashComponent } from 'src/app/pages/menu-dash/menu-dash.component';
 
+import {TooltipModule} from 'primeng/tooltip';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {InputNumberModule} from 'primeng/inputnumber';
+import {FieldsetModule} from 'primeng/fieldset';
 
+import {InputSwitchModule} from 'primeng/inputswitch';
 
 
 @NgModule({
@@ -55,7 +71,17 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     ConfirmDialogModule,
     AutoCompleteModule,
     CalendarModule,
-    ZXingScannerModule
+    ProgressBarModule,
+    ZXingScannerModule,
+    FieldsetModule,
+   MessagesModule,
+   BarcodeScannerLivestreamModule,
+   CardModule,
+   TooltipModule,
+   ProgressSpinnerModule,
+   InputNumberModule,
+   InputSwitchModule
+    
   ],
   declarations: [
     DashboardComponent,
@@ -65,7 +91,12 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     MapsComponent,
     NotaComponent,
     ConferenciaComponent,
-    ItemComponent
+    ItemComponent,
+    LoteComponent,
+    MenuDashComponent,
+    ConferenciaManualComponent,
+    ManualItemComponent,
+    PrecosalteraadosComponent
   ],
   providers : [ConfirmationService, MessageService]
 })

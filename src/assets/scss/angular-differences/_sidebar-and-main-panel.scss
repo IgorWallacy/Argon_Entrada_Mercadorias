@@ -1,4 +1,4 @@
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 3000px) {
   html:not(.auth-layout) .main-content {
       margin-left: $navbar-vertical-width;
   }
@@ -6,7 +6,7 @@
 
 .fixed-right{
   .navbar-vertical.navbar-expand-md{
-    right: 0;
+    left: 0;
     border-width: 0 0 0 1px;
   }
    .main-content {

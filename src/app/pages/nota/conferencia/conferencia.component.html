@@ -1,4 +1,4 @@
-<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+<div class="header bg-danger pb-8 pt-5 pt-md-8" >
     <div class="container-fluid">
         <div class="header-body">
         </div>
@@ -16,7 +16,8 @@
                 </div>
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush">
-                        <p-table [responsive]="true" [value]="notaFisica" [loading]="loading">
+                        <p-table [responsive]="true" [value]="notaFisica"  [loading]="loading"  [paginator]="true" [rows]="10" [showCurrentPageReport]="true" 
+                        currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} notas" [rowsPerPageOptions]="[10,25,50]" >
                             <ng-template pTemplate="header">
                                 <tr>
                                     <th>Número da Conferencia</th>
@@ -42,7 +43,7 @@
                                     
                                         <td>
                                             <span class="p-column-title">Editar </span>
-                                        <p-button icon="pi pi-sign-in" (click)="editar(f.id, f.notafiscal.filial.id)" label="Realizar Conferência"></p-button>
+                                        <button pButton icon="pi pi-sign-in" class="p-button-raised p-button-rounded p-button-info" (click)="editar(f.id, f.notafiscal.filial.id)" label="Realizar Conferência"></button>
                                         </td>
                                 </tr>
                             </ng-template>

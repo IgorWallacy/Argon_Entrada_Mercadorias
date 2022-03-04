@@ -1,6 +1,9 @@
 export const environment = {
+
+  
   production: true,
-  apiUrl: 'https://179.107.128.52:2020',
+  apiUrl: window.location.protocol +'//'+ window.location.hostname + ':' + window.location.port ,
+  //apiUrl: 'http://192.168.254.1:2096',
   clientId: 'doks',
   clientSecret: '1234',
   obterTokenUrl : 'oauth/token'

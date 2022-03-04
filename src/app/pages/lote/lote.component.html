@@ -1,0 +1,260 @@
+<div class="header bg-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <h1 class="text-center font-italic" style=" color: whitesmoke; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; font-size: 4vh;  ">  {{filial}} </h1>
+
+      </div>
+  </div>
+  <div class="p-shadow-24" >
+    <div class="container-fluid mt-7">
+  <div class="col-lg-2 col-md-2">
+    <button  pButton pRipple label="Voltar" icon="fa fa-backward" class="p-button-rounded p-button-info p-mr-2" (click)="voltar()"></button>
+</div>
+</div>
+</div>
+  <div class="separator separator-bottom separator-skew zindex-100">
+    <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+    </svg>
+  </div>
+</div>
+
+
+
+<p-toast></p-toast>
+<div class="container-fluid mt--7">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 col-md-12">
+    <div class="row">
+        <div class="col">
+
+            
+
+            
+    <!--    <p-card>
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button style="margin-top: 20px;" pButton pRipple label="Novo" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button> 
+            
+        </ng-template>
+
+        <ng-template pTemplate="right">
+           
+            <button style="margin-top: 20px;" pButton pRipple label="Exportar / Download" (click)="exportExcel()"  icon="pi pi-download" class="p-button-help"></button>
+        </ng-template>
+    </p-toolbar>
+    </p-card> -->
+    </div>
+</div>
+</div>
+</div>
+
+
+
+<div class="row justify-content-center">
+    <div class="col-lg-12 col-md-12">
+  <!-- Table -->
+  <div class="row" style="margin-top: 20px;">
+      <div class="col">
+          <div class="card shadow">
+
+            <div class="card-header border-0">
+                <h3 class="mb-0">Entrada e Conferência de Validades </h3>
+          
+               
+            
+            <div class="card-header border-0">
+                <p-calendar inputmode="none" [locale]="pt" showButtonBar="true" [touchUI]="false"  dateFormat="dd/mm/yy"  placeholder="Data Inicial"  [(ngModel)]="dataInicial"> </p-calendar>
+            </div>
+            
+          
+            <div class="card-header border-0"> 
+                <p-calendar inputmode="none" [locale]="pt" showButtonBar="true" [touchUI]="false" dateFormat="dd/mm/yy" placeholder="Data Final"  [(ngModel)]="dataFinal"> </p-calendar>
+            </div>
+
+            <div class="card-header border-0">
+                <button [disabled]="loading" pButton label="Filtrar por vencimento" icon="fa fa-calendar" (click)="porDataItensNota(dataInicial,dataFinal)"></button>
+            </div>
+
+            </div>
+            <div  class="card-header border-0">
+            <p>Filtrar apenas produtos com saldo maior que zero</p>
+            <p-inputSwitch [(ngModel)]="checked"></p-inputSwitch>
+            </div>
+            <p-toolbar>
+
+                <div class="p-toolbar-group-left">
+
+          
+                
+                    <!--  <button type="button" pButton pRipple icon="pi pi-file-o" (click)="dt.exportCSV()" class="p-mr-2" pTooltip="CSV" tooltipPosition="bottom"></button> -->
+                    <button type="button" label="Exportar para Excel" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success p-mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button> 
+                 
+                </div>     
+                <div  class="p-toolbar-group-right">
+                       
+                        <button  [disabled]="loading" type="button" style="margin-left: 5px;" label="Imprimir" pButton pRipple icon="pi pi-file-pdf" (click)="generatePdf()" class="p-button-rounded p-button-info" pTooltip="Imprimir no formato PDF" tooltipPosition="bottom"></button>
+
+                       
+                  
+            </div>
+            </p-toolbar>
+
+              <div class="table-responsive" style="margin-top: 20px;">
+                <table class="table align-items-center table-flush">
+
+                    <p-progressBar [hidden]="!loading"  mode="indeterminate"></p-progressBar>
+
+                    <br/>
+
+                    <p-table #dt  styleClass="p-datatable-striped" [loading]=loading [paginator]="true" [responsive]="true" [rows]="10"  [columns]="cols"  [value]="produtos"  [(selection)]="produtosSelecionados"
+                    currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} registros" [rowsPerPageOptions]="[10,25,50]"  [showCurrentPageReport]="true" 
+                    [globalFilterFields]="['conferenciaManual.numeroNotaFiscal', 'produto.nome', 'conferenciaManual.fornecedor.nome']"
+                    >
+                        <ng-template pTemplate="caption">
+
+                            <div class="p-d-flex">
+                                <span class="p-input-icon-left p-ml-auto">
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Pesquisar" />
+                                </span>
+                            </div>
+                           
+                        </ng-template>
+
+                        
+
+                        <ng-template pTemplate="header" let-columns>
+
+                          
+
+                            <tr>
+                                <!--
+                                <th *ngFor="let col of columns">
+                                    {{col.header}}
+                                </th>
+                            -->
+                          
+                            <th>N° da Nota</th>
+                            <th colspan="2">Fornecedor</th>
+                            <th colspan="2">Produto</th>
+                            <th>Entrada</th>
+                            <th>Vencimento</th>
+                           <!-- <th>Deletar</th> -->
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-product let-columns="columns">
+                            <tr [pSelectableRow]="product">
+                               
+                               <!-- <td *ngFor="let col of columns">
+                                    {{_(rowData, col.field)}}
+                                </td>
+                            -->
+                            
+                          
+                                <td>
+                                    <span class="p-column-title">N° da nota </span>
+                                    {{product.conferenciaManual.numeroNotaFiscal}}</td>
+                               
+                               
+
+                                    <td colspan="2">
+                                        <span class="p-column-title">Fornecedor </span>
+                                        {{product.conferenciaManual.fornecedor.nome |  slice:0:28}}</td>
+                                   
+                                    <td colspan="2">
+
+                                <span class="p-column-title">Produto </span>
+                                {{product.produto.nome |  slice:0:28 }}</td>
+
+                                <td>
+                                    <span class="p-column-title">Entrada </span>
+                                    {{product.conferenciaManual.dataEntrada  |  date: 'dd/MM/yyyy'}}</td>   
+    
+                        
+                            
+                            <td>
+                                <span class="p-column-title">Vencimento </span>
+                                {{product.dataVencimento  |  date: 'dd/MM/yyyy'}}</td>   
+                                
+                                <!--
+                                <td>
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"></button>
+                                </td>
+                            -->
+                            </tr>
+                        </ng-template>
+
+                       
+
+                    </p-table>
+
+                    
+                    
+                </table>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                
+                </div>
+                
+
+                <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+                <p-dialog position="top" [(visible)]="produtoDialog" blockScroll="true" style="height: 5vh;" [modal]="true" [maximizable]="true" styleClass="p-fluid">
+                            
+
+                    <ng-template pTemplate="header">
+                        <h1>Cadastro de validade</h1>
+                    </ng-template>
+
+                    <ng-template pTemplate="content">
+                                          
+                     <!--   <img [src]="'assets/img/util/validade.jpeg'"  width="20%" class="p-shadow-8" /> -->
+                        
+                       
+                        
+                        <div class="p-field">
+                            <label for="Produto">Produto</label> <br/>
+                            
+                            
+                           
+                            <p-autoComplete [forceSelection]="true" inputmode="search"  [dropdown]="false" required="true" minLength= "5" [(ngModel)]="product.idProduto" [suggestions]="produtoResult"  (completeMethod)="search($event)" field="nome" >
+                                
+                            </p-autoComplete> 
+
+                            <small class="p-invalid" *ngIf="submitted && !product.idProduto">Informe o produto. O campo é obrigatório</small>
+
+                            
+
+                            
+                           
+                        </div>
+                      
+                     
+                       
+                            <div class="p-field" >
+                                <label for="validade">Data de Validade</label>
+                               
+                                <p-calendar id="validade" [inline]="true"   [readonlyInput]="true"     [locale]="pt" dateFormat="dd/mm/yy" required="true" aria-describedby="validade-help"  inputmode="none" [(ngModel)]="product.vencimento" ></p-calendar>
+                                <small id="validade-help">Informe o vencimento do produto </small> <br/>
+                                <small class="p-invalid" *ngIf="submitted && !product.validade">Informe a validade. O campo é obrigatório</small>
+                            </div>
+
+                    
+                
+                       
+                    </ng-template>
+                    
+                    <ng-template pTemplate="footer">
+
+                        
+                       
+                        <button pButton pRipple label="Cancelar" icon="pi pi-times"  class="p-button-danger" (click)="hideDialog()"></button>
+                        <button pButton pRipple label="Salvar"  icon="pi pi-check"  class="p-button-success" (click)="saveProduct(product)"></button>
+
+                    </ng-template>
+                   
+                </p-dialog>

@@ -1,0 +1,193 @@
+<div class="header bg-danger pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+   
+      <h1 class="text-center font-italic" style=" color: whitesmoke; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; font-size: 4vh;  ">  {{nomeFilial}} </h1>
+    
+    </div>
+  </div>
+  <div class="separator separator-bottom separator-skew zindex-100">
+      <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+      </svg>
+    </div>
+</div>
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+
+    <div class="row">
+
+      <div class="col-xl-3 col-lg-6">
+        <div class="card card-stats mb-4 mb-xl-0">
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <h5 class="card-title  text-uppercase text-muted mb-0">Produtos vencendo hoje</h5>
+                <span class="h2 font-weight-bold mb-0">{{produtoVenceHoje}}</span>
+              </div>
+              <div class="col-auto">
+                <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                  <i class="fas fa-chart-bar"></i>
+                </div>
+              </div>
+            </div>
+            <p class="mt-3 mb-0 text-muted text-sm">
+              <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> </span>
+              <span class="text-nowrap"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-lg-6">
+        <div class="card card-stats mb-4 mb-xl-0">
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <h5 class="card-title text-uppercase text-muted mb-0">Produtos vencendo nos próximos 7 dias</h5>
+                <span class="h2 font-weight-bold mb-0">{{produtoVencendoProximos7dias}}</span>
+              </div>
+              <div class="col-auto">
+                <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                  <i class="fas fa-chart-bar"></i>
+                </div>
+              </div>
+            </div>
+            <p class="mt-3 mb-0 text-muted text-sm">
+              <span class="text-success mr-2"><i class="fa fa-arrow-up"></i></span>
+             
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-lg-6">
+        <div class="card card-stats mb-4 mb-xl-0">
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <h5 class="card-title text-uppercase text-muted mb-0">Produtos vencendo nos próximos 15 dias</h5>
+                <span class="h2 font-weight-bold mb-0">{{produtoVencendoProximos15dias}}</span>
+              </div>
+              <div class="col-auto">
+                <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                  <i class="fas fa-chart-bar"></i>
+                </div>
+              </div>
+            </div>
+            <p class="mt-3 mb-0 text-muted text-sm">
+              <span class="text-success mr-2"><i class="fa fa-arrow-up"></i></span>
+             
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-lg-6">
+        <div class="card card-stats mb-4 mb-xl-0">
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <h5 class="card-title text-uppercase text-muted mb-0">Produtos vencendo nos próximos 30 dias</h5>
+                <span class="h2 font-weight-bold mb-0">{{produtoVencendoProximos30dias}}</span>
+              </div>
+              <div class="col-auto">
+                <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                  <i class="fas fa-chart-bar"></i>
+                </div>
+              </div>
+            </div>
+            <p class="mt-3 mb-0 text-muted text-sm">
+              <span class="text-success mr-2"><i class="fa fa-arrow-up"></i></span>
+              <span class="text-nowrap"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+     
+  
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-9 col-md-7">
+
+
+        
+
+
+ 
+
+     <!-- Card stats -->
+ 
+    
+    <!-- Table -->
+    <div style="padding: 20px;" class="row p-m-1 p-p-1 p-m-lg-1 p-b-lg-1" >
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header ">
+            <h3 class="mb-0">Menu Dashboard</h3>
+          </div>
+          <div  class="table-responsive">
+
+            
+              
+                
+             
+             
+                  <p-table selectionMode="single" [value]="menu" [responsive]="true" styleClass="p-datatable-striped">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Módulo</th>
+                            <th>Selecionar</th>
+                  
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-menu>
+                        <tr>
+                        
+                      <td>Controle de validade</td>
+                     <td><button icon="pi pi-calendar" pButton class="p-button-info p-button-raised p-button-rounded" label="Acessar" (click)="validade()"  ></button> </td>
+                        </tr>
+
+                        <tr>
+                          <td>Remarcação de Preços / Preços Alterados</td>
+                          <td><button icon="pi pi-ticket" pButton class="p-button-info p-button-raised p-button-rounded" label="Acessar" (click)="remarcacaoPreco()"  ></button></td>
+                        </tr>
+                       <!--
+                        <tr>
+                       
+                          <td>Controle de entrada de mercadoria(s) (Conferência Cega)</td>
+                         <td> <button icon="pi pi-check-square" pButton class="p-button-info p-button-raised p-button-rounded" label="Acessar" (click)="nota()"  ></button> </td>
+                          
+                         
+                         
+                        
+                        </tr>
+                      -->
+                        <tr>
+                          <td>Controle de entrada de mercadoria(s) (Conferência Manual)</td>
+                          <td><button icon="pi pi-tags" pButton class="p-button-info p-button-raised p-button-rounded" label="Acessar" (click)="notaManual()"  ></button></td>
+                        </tr>
+                        
+                    </ng-template>
+                </p-table>
+                    
+                    
+                
+              
+               
+
+           
+          </div>
+        
+        </div>
+      </div>
+    
+    <!-- Dark table -->
+ 
+  </div>
+  </div>
+  </div>
+  </div>
+
+  

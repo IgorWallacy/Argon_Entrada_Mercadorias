@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import {ButtonModule} from 'primeng/button';
+import {CardModule} from 'primeng/card';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import {ButtonModule} from 'primeng/button';
     CommonModule,
     RouterModule,
     NgbModule,
-    ButtonModule
+    ButtonModule,
+    CardModule
   ],
   declarations: [
     FooterComponent,

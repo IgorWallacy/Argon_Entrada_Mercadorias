@@ -1,14 +1,7 @@
+import { MessageService } from 'primeng/api';
 import { DashboardService } from './../../services/dashboard.service';
 import { Component, OnInit } from '@angular/core';
-import Chart from 'chart.js';
 
-// core components
-import {
-  chartOptions,
-  parseOptions,
-  chartExample1,
-  chartExample2
-} from "../../variables/charts";
 import { Router } from '@angular/router';
 
 @Component({
@@ -21,19 +14,39 @@ export class DashboardComponent implements OnInit {
  
   empresas;
 
-  constructor(private service:DashboardService,  private route:Router) {}
+  loading:boolean = true
+
+  constructor(private service:DashboardService,  private route:Router, private message:MessageService) {}
 
   ngOnInit() {
 
      this.service.getFilial().subscribe( r => {
 
       this.empresas = r
-    })
+
+      this.loading = false
+
+    }, erro => {
+    
+      this.message.add( {severity:'error', summary:'Erro ao carregar empresas', detail:'Pressione F5 ou tente mais tarde'})
+  
+
+    }
+    
+    )
   }
   
- nota(idFilial) {
+ nota(idFilial, nome) {
   
-   this.route.navigate([`/notas/filial/${idFilial}`])
+
+   this.route.navigate([`/menu-dash/filial/${idFilial}/${nome}`])
+
+   localStorage.setItem('idFilial', idFilial)
  }
+
+ logout(){
+  localStorage.clear();
+  this.route.navigate(['/login'])
+}
 
 }

@@ -1,9 +1,12 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { Nota } from './../../model/nota';
 import { NotaService } from './../../services/nota.service';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { JwtHelperService} from '@auth0/angular-jwt';
+
+
+
 import { Table } from 'primeng/table';
 import { SelectItem } from 'primeng/api';
 
@@ -18,7 +21,18 @@ export class NotaComponent implements OnInit {
 
   constructor(private service:NotaService, private route:Router, private rotaAtivada:ActivatedRoute) { }
 
+  jwtHelper: JwtHelperService = new JwtHelperService();
+
+   token = localStorage.getItem('access_token')
+
+   codigo = this.jwtHelper.decodeToken(this.token).id
+  
+
   @ViewChild('dt') table: Table;
+
+  
+
+  
 
   loading: boolean = true;
 
@@ -27,6 +41,7 @@ export class NotaComponent implements OnInit {
   value1: string = "0";
 
   filialId = this.rotaAtivada.snapshot.params['idFilial'];
+
 
   
 
@@ -76,15 +91,16 @@ export class NotaComponent implements OnInit {
   }
 
   buscarNotaPorId(notaId) {
-    return this.service.getNotaId(notaId).subscribe(response => {
-      console.log(response)
+    return this.service.getNotaId(notaId, this.codigo).subscribe(response => {
+  //   console.log(response)
     })
   }
+  
 
   confere(notaId) {
 
   
-
+    this.buscarNotaPorId(notaId)
  
 
   this.route.navigate([`/notas/${notaId}`])

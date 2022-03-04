@@ -1,3 +1,5 @@
+import { Router } from '@angular/router';
+import { Usuario } from './../model/Usuario';
 import { environment } from './../../environments/environment';
 import { UnidadeMedida } from './../model/UnidadeMedida';
 import { Produto } from './../model/Produto';
@@ -13,7 +15,16 @@ import { ConferenciaCegaItem } from '../model/conferenciaCegaItem';
 })
 export class NotaService {
 
+  constructor(private http:HttpClient, private router:Router) { }
+
    api:string = environment.apiUrl
+
+ 
+
+   getUsuarios(codigo){
+
+    return this.http.get<Usuario>(`${this.api}/api/usuario/${codigo}`)
+   }
 
   getUnidades() {
 
@@ -22,14 +33,14 @@ export class NotaService {
     return this.http.get<UnidadeMedida>(`${this.api}/api/unidademedida` )
   }
   
-  getProdutos() {
+  getProdutos():Observable<Produto> {
 
     
     
     return this.http.get<Produto>(`${this.api}/api/produto`)
   }
 
-  constructor(private http:HttpClient) { }
+ 
 
   getNotas():Observable<Nota> {
 
@@ -45,11 +56,11 @@ export class NotaService {
     return this.http.get<Nota>(`${this.api}/api/nota/porFilial/${filialId}`)
   }
 
-  getNotaId(notaId):Observable<Nota> {
+  getNotaId(notaId, codigo):Observable<Nota> {
 
     
 
-    return this.http.get<Nota>(`${this.api}/api/nota/notaId/${notaId}`)
+    return this.http.get<Nota>(`${this.api}/api/nota/notaId/${notaId}/usuarioCodigo/${codigo}`)
   }
 
   getNotaConferenciaFisica(notaId):Observable<NotaConfFisica> {

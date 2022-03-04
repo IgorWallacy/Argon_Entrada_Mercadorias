@@ -4,6 +4,7 @@ import { JwtHelperService} from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,12 @@ export class LoginService {
  
  
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private router: Router) { }
 
   api:string = environment.apiUrl
 
+  
+  
   tokenUrl:string =  environment.apiUrl +'/' + environment.obterTokenUrl
 
   clientId: string = environment.clientId;
@@ -37,8 +40,26 @@ export class LoginService {
   getUsuarioAutenticado(){
     const token = this.obterToken()
     if(token) {
-     const usuario = this.jwtHelper.decodeToken(token).user_name
+     const usuario = this.jwtHelper.decodeToken(token).nome
      return usuario;
+    }
+    return null
+  }
+
+  getIdUsuarioAutenticado(){
+    const token = this.obterToken()
+    if(token) {
+     const id = this.jwtHelper.decodeToken(token).id
+     return id;
+    }
+    return null
+  }
+
+  getSupervisorUsuarioAutenticado(){
+    const token = this.obterToken()
+    if(token) {
+     const supervisor = this.jwtHelper.decodeToken(token).supervisor
+     return supervisor;
     }
     return null
   }

@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { LoginService } from './../../services/login.service';
 import { Usuario } from './../../model/Usuario';
@@ -13,7 +12,6 @@ import { MessageService } from 'primeng/api';
 export class LoginComponent implements OnInit, OnDestroy {
   constructor(private service:LoginService, private messageService: MessageService, private route:Router) {}
 
-  usuarioLogado:any
 
   ngOnInit() {
 
@@ -22,66 +20,56 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   usuario:Usuario = new Usuario()
   
-  
+  loading = false
 
+  
 
   login(form) {
     
+    this.loading = true
 
     this.service.tentarLogar(this.usuario.codigo, this.usuario.senha)
+
+ 
+
       .subscribe(response => {
      //   console.log(response)
-        this.messageService.add({severity:'success', life: 5000, 
-        summary:'Logado com Sucesso ! ', 
-        detail: `Bem vindo redirecionando para a dashboard !`});
-
+       
         const accessToken = JSON.stringify(response)
 
         localStorage.setItem('access_token',accessToken)
 
-        this.route.navigate(['/dashboard'])
+        
+        this.messageService.add({severity:'success', life: 5000, 
+        summary:'Logado com Sucesso ! ', 
+        detail: `Bem vindo, redirecionando para o dashboard !`});
 
+
+      
+        setTimeout(() => {
+        this.loading = false
+        this.route.navigate(['/dashboard'])
+        },1500)
       }, erro => { 
 
+        if(erro.status == 0){
+          this.messageService.add({severity:'error', life: 5000, 
+          summary:'Erro ao conectar com o servidor', 
+          detail: `${erro.message}` });
+         
+        }
+        else {
         this.messageService.add({severity:'error', life: 5000, 
-        summary:'Usuário e ou senha inválido(s) !', 
-        detail: `Tente novamente ! Erro : ${erro.status} - ${erro.message}` });
-
-       
+        summary:'Usuário e/ou senha inválido(s) !', 
+        detail: `Por favor tente novamente !` });
+        
+        }
+       this.loading = false
 
       });
       
 
-    /* 
-    
-    this.service.efetuarLogin(this.usuario).subscribe( r => {
-      if(r === null) {
-        this.messageService.add({severity:'error', life: 5000, summary:'Usuário e ou senha inválido !', detail: `Tente novamente ou reveja suas credencias com o Administrador`});
-      } else {
-
-       
-        this.service.getUsuarioLogado(this.usuario.codigo).subscribe(resp => {
-          this.usuarioLogado = resp
-          
-          //console.log(this.usuarioLogado.nome)
-
-          localStorage.setItem('nome', this.usuarioLogado.nome)
-          
-        })
-
-
-        
-        this.messageService.add({severity:'success', life: 5000, summary:'Logado com Sucesso ! ', detail: `Bem vindo redirecionando para a dashboard !`});
-        
-       
-
-    
-
-       
-        
-        this.route.navigate(['/dashboard'])
-      }
-    }) **/
+   
 
   }
 
