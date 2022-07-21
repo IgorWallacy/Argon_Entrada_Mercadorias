@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
 
+    
      this.service.getFilial().subscribe( r => {
 
       this.empresas = r
@@ -35,6 +36,8 @@ export class DashboardComponent implements OnInit {
     
     )
   }
+
+  
   
  nota(idFilial, nome) {
   

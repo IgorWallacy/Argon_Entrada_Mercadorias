@@ -363,7 +363,7 @@ saveProduct(conferencia:ConferenciaManualItem) {
       
       else {
       //    this.conferencia.id = this.createId();
-      if( (conferencia.quantidade != null) && (conferencia.idUnidadeMedida != null) && (conferencia.fatorConversao != null) && (conferencia.dataVencimento != null) ) {
+      if( (conferencia.quantidade != null) && (conferencia.idUnidadeMedida != null) && (conferencia.produto != null) && (conferencia.fatorConversao != null) && (conferencia.dataVencimento != null) ) {
        
          let now = new Date
            this.paginaCarregada = true
@@ -379,7 +379,7 @@ saveProduct(conferencia:ConferenciaManualItem) {
 
           this.service.salvarItem(conferencia, this.conferenciaId).subscribe(r=> {
 
-        //      console.log(r)
+            //  console.log(r)
 
           //  this.conferencias.push(this.conferencia);
            
@@ -618,7 +618,7 @@ getDocumentDefinition() {
    
      [ [    element.produto.ean  ] ],
      
-     [ [      element.produto.nome ] ],
+     [ [        element.produtoSemCadastro? element.produtoSemCadastro : element.produto.nome ] ],
     
      [ [      element.idUnidadeMedida.nome ] ],
     

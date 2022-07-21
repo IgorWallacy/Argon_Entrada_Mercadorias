@@ -11,6 +11,8 @@ export class ConferenciaManualItem{
   
    produto:Produto
 
+   produtoSemCadastro:string
+
    idConferencia: ConferenciaManual
  
    dataVencimento:Date

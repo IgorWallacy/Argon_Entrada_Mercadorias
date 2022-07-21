@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: window.location.protocol +'//'+ window.location.hostname + ':2096' ,
+  apiUrl: window.location.protocol +'//'+ window.location.hostname + ':1010' ,
   // apiUrl: 'http://localhost:2096',
   clientId: 'doks',
   clientSecret: '1234',
